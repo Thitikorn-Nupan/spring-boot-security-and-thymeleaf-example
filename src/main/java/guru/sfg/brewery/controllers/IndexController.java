@@ -14,17 +14,19 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package guru.sfg.brewery.repositories;
+package guru.sfg.brewery.controllers;
 
-import guru.sfg.brewery.models.Customer;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
-import java.util.UUID;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Created by jt on 2019-01-26.
  */
-public interface CustomerRepository extends JpaRepository<Customer, UUID> {
-    List<Customer> findAllByCustomerNameLike(String customerName);
+@Controller
+public class IndexController {
+
+    @GetMapping({"", "/"})
+    public String index(){
+        return "index";
+    }
 }

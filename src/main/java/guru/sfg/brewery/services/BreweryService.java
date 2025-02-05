@@ -16,7 +16,7 @@
  */
 package guru.sfg.brewery.services;
 
-import guru.sfg.brewery.domain.Brewery;
+import guru.sfg.brewery.models.Brewery;
 
 import java.util.List;
 

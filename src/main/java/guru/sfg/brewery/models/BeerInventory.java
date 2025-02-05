@@ -14,17 +14,37 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package guru.sfg.brewery.repositories;
+package guru.sfg.brewery.models;
 
-import guru.sfg.brewery.models.Customer;
-import org.springframework.data.jpa.repository.JpaRepository;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 /**
  * Created by jt on 2019-01-26.
  */
-public interface CustomerRepository extends JpaRepository<Customer, UUID> {
-    List<Customer> findAllByCustomerNameLike(String customerName);
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+public class BeerInventory extends BaseEntity {
+
+    @Builder
+    public BeerInventory(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, Beer beer,
+                         Integer quantityOnHand) {
+        super(id, version, createdDate, lastModifiedDate);
+        this.beer = beer;
+        this.quantityOnHand = quantityOnHand;
+    }
+
+    @ManyToOne
+    private Beer beer;
+
+    private Integer quantityOnHand = 0;
 }

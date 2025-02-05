@@ -17,9 +17,10 @@
 
 package guru.sfg.brewery.services;
 
-import guru.sfg.brewery.web.model.BeerDto;
-import guru.sfg.brewery.web.model.BeerPagedList;
-import guru.sfg.brewery.web.model.BeerStyleEnum;
+
+import guru.sfg.brewery.dto.BeerDto;
+import guru.sfg.brewery.dto.BeerPagedList;
+import guru.sfg.brewery.dto.BeerStyleEnum;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.UUID;
@@ -28,7 +29,7 @@ public interface BeerService {
 
     BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest, Boolean showInventoryOnHand);
 
-    BeerDto findBeerById(UUID beerId,  Boolean showInventoryOnHand);
+    BeerDto findBeerById(UUID beerId, Boolean showInventoryOnHand);
 
     BeerDto saveBeer(BeerDto beerDto);
 

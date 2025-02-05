@@ -1,6 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/layout :: layout (~{::body},'beers')}">
-
 <body>
 
 <h2>
@@ -13,7 +12,7 @@
         <input
                 th:replace="~{fragments/inputField :: input ('Beer Name', 'beerName', 'text')}" />
         <input
-                th:replace="~{fragments/selectField :: select ('Style', 'beerStyle', ${T(guru.sfg.brewery.web.model.BeerStyleEnum).values()})}" />
+                th:replace="~{fragments/selectField :: select ('Style', 'beerStyle', ${T(guru.sfg.brewery.dto.BeerStyleEnum).values()})}" />
         <input
                 th:replace="~{fragments/inputField :: input ('UPC', 'upc', 'number')}" />
         <input

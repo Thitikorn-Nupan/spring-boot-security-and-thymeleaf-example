@@ -16,9 +16,9 @@
  */
 package guru.sfg.brewery.repositories;
 
-import guru.sfg.brewery.domain.BeerOrder;
-import guru.sfg.brewery.domain.Customer;
-import guru.sfg.brewery.domain.OrderStatusEnum;
+import guru.sfg.brewery.models.BeerOrder;
+import guru.sfg.brewery.models.Customer;
+import guru.sfg.brewery.models.OrderStatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

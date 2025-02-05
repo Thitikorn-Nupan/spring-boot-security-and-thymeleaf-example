@@ -17,7 +17,7 @@
 
 package guru.sfg.brewery.repositories;
 
-import guru.sfg.brewery.domain.BeerOrderLine;
+import guru.sfg.brewery.models.BeerOrderLine;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.UUID;

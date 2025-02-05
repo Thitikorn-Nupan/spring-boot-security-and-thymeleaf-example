@@ -14,17 +14,20 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package guru.sfg.brewery.repositories;
 
-import guru.sfg.brewery.models.Customer;
-import org.springframework.data.jpa.repository.JpaRepository;
+package guru.sfg.brewery.mappers;
 
-import java.util.List;
-import java.util.UUID;
+import guru.sfg.brewery.dto.BeerDto;
+import guru.sfg.brewery.models.Beer;
+import org.mapstruct.DecoratedWith;
+import org.mapstruct.Mapper;
 
-/**
- * Created by jt on 2019-01-26.
- */
-public interface CustomerRepository extends JpaRepository<Customer, UUID> {
-    List<Customer> findAllByCustomerNameLike(String customerName);
+// crazy annotation
+@Mapper(uses = DateMapper.class)
+@DecoratedWith(BeerMapperDecorator.class)
+public interface BeerMapper {
+
+    BeerDto beerToBeerDto(Beer beer);
+
+    Beer beerDtoToBeer(BeerDto beerDto);
 }

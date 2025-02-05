@@ -16,7 +16,7 @@
  */
 package guru.sfg.brewery.repositories;
 
-import guru.sfg.brewery.domain.Brewery;
+import guru.sfg.brewery.models.Brewery;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

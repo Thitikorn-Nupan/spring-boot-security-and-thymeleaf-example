@@ -17,12 +17,13 @@
 
 package guru.sfg.brewery.services;
 
-import guru.sfg.brewery.domain.Beer;
+import guru.sfg.brewery.dto.BeerDto;
+import guru.sfg.brewery.dto.BeerPagedList;
+import guru.sfg.brewery.dto.BeerStyleEnum;
+import guru.sfg.brewery.models.Beer;
 import guru.sfg.brewery.repositories.BeerRepository;
-import guru.sfg.brewery.web.mappers.BeerMapper;
-import guru.sfg.brewery.web.model.BeerDto;
-import guru.sfg.brewery.web.model.BeerPagedList;
-import guru.sfg.brewery.web.model.BeerStyleEnum;
+import guru.sfg.brewery.mappers.BeerMapper;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
