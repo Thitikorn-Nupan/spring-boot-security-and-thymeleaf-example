@@ -22,7 +22,10 @@ import guru.sfg.brewery.repositories.BeerRepository;
 import guru.sfg.brewery.web.model.BeerOrderLineDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
+
+// @Service
 public abstract class BeerOrderLineMapperDecorator implements BeerOrderLineMapper {
     private BeerRepository beerRepository;
     private BeerOrderLineMapper beerOrderLineMapper;

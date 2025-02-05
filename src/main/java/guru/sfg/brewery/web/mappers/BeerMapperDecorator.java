@@ -22,7 +22,9 @@ import guru.sfg.brewery.domain.BeerInventory;
 import guru.sfg.brewery.web.model.BeerDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
+//@Service
 public abstract class BeerMapperDecorator implements BeerMapper{
 
     private BeerMapper beerMapper;
