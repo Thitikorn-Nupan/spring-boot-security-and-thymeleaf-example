@@ -23,8 +23,7 @@ import guru.sfg.brewery.models.BeerInventory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-//@Service
-public abstract class BeerMapperDecorator implements BeerMapper{
+public abstract class BeerMapperDecorator implements BeerMapper {
 
     private BeerMapper beerMapper;
 

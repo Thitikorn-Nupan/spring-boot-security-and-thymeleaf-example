@@ -33,6 +33,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 public class Brewery extends BaseEntity {
+
     private String breweryName;
 
     @Builder

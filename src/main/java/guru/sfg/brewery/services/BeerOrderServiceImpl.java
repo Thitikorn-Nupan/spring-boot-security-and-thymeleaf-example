@@ -26,7 +26,8 @@ import guru.sfg.brewery.repositories.BeerOrderRepository;
 import guru.sfg.brewery.repositories.CustomerRepository;
 import guru.sfg.brewery.mappers.BeerOrderMapper;
 
-import lombok.AllArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,9 +39,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Slf4j
 public class BeerOrderServiceImpl implements BeerOrderService {
 
     private final BeerOrderRepository beerOrderRepository;

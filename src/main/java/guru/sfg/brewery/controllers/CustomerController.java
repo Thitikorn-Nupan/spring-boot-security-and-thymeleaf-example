@@ -20,6 +20,7 @@ package guru.sfg.brewery.controllers;
 import guru.sfg.brewery.models.Customer;
 import guru.sfg.brewery.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,13 +34,17 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 @RequestMapping("/customers")
 @Controller
 public class CustomerController {
 
-    //ToDO: Add service
     private final CustomerRepository customerRepository;
+
+    @Autowired
+    public CustomerController(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     @RequestMapping("/find")
     public String findCustomers(Model model){
@@ -50,7 +55,6 @@ public class CustomerController {
     @GetMapping
     public String processFindFormReturnMany(Customer customer, BindingResult result, Model model){
         // find customers by name
-        //ToDO: Add Service
         List<Customer> customers = customerRepository.findAllByCustomerNameLike("%" + customer.getCustomerName() + "%");
         if (customers.isEmpty()) {
             // no customers found

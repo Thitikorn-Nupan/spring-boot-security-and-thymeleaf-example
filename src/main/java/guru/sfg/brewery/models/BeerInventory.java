@@ -35,6 +35,10 @@ import java.util.UUID;
 @Entity
 public class BeerInventory extends BaseEntity {
 
+    @ManyToOne
+    private Beer beer;
+    private Integer quantityOnHand = 0;
+
     @Builder
     public BeerInventory(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, Beer beer,
                          Integer quantityOnHand) {
@@ -43,8 +47,5 @@ public class BeerInventory extends BaseEntity {
         this.quantityOnHand = quantityOnHand;
     }
 
-    @ManyToOne
-    private Beer beer;
 
-    private Integer quantityOnHand = 0;
 }

@@ -30,8 +30,8 @@ import java.util.UUID;
 /**
  * Created by jt on 2019-01-26.
  */
-@RequiredArgsConstructor // is worked instead contru and autowir
-@Component
+@RequiredArgsConstructor // is worked instead constructor and autowire
+// @Component
 public class DefaultDataOnCommandLineRunner implements CommandLineRunner {
 
     public static final String TASTING_ROOM = "Tasting Room";

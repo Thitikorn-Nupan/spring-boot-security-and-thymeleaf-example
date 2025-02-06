@@ -19,15 +19,20 @@ package guru.sfg.brewery.services;
 import guru.sfg.brewery.models.Brewery;
 import guru.sfg.brewery.repositories.BreweryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 @Service
 public class BreweryServiceImpl implements BreweryService{
 
     private final BreweryRepository breweryRepository;
+    @Autowired
+    public BreweryServiceImpl(BreweryRepository breweryRepository) {
+        this.breweryRepository = breweryRepository;
+    }
 
     @Override
     public List<Brewery> getAllBreweries() {

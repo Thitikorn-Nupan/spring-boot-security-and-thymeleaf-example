@@ -22,6 +22,7 @@ import guru.sfg.brewery.models.Beer;
 import guru.sfg.brewery.repositories.BeerInventoryRepository;
 import guru.sfg.brewery.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -39,7 +40,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 @RequestMapping("/beers")
 @Controller
 public class BeerController {
@@ -47,6 +48,11 @@ public class BeerController {
     private final BeerRepository beerRepository;
     private final BeerInventoryRepository beerInventoryRepository;
 
+    @Autowired
+    public BeerController(BeerRepository beerRepository, BeerInventoryRepository beerInventoryRepository) {
+        this.beerRepository = beerRepository;
+        this.beerInventoryRepository = beerInventoryRepository;
+    }
 
     @RequestMapping("/find")
     public String findBeers(Model model) {
@@ -56,9 +62,7 @@ public class BeerController {
 
     @GetMapping
     public String processFindFormReturnMany(Beer beer, BindingResult result, Model model) {
-        // find beers by name
-        //ToDO: Add Service
-        //ToDO: Get paging data from view
+
         Page<Beer> pagedResult = beerRepository.findAllByBeerNameIsLike("%" + beer.getBeerName() + "%", createPageRequest(0, 10, Sort.Direction.DESC, "beerName"));
         List<Beer> beerList = pagedResult.getContent();
         if (beerList.isEmpty()) {

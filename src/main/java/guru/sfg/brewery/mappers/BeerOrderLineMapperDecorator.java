@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 
-// @Service
 public abstract class BeerOrderLineMapperDecorator implements BeerOrderLineMapper {
     private BeerRepository beerRepository;
     private BeerOrderLineMapper beerOrderLineMapper;

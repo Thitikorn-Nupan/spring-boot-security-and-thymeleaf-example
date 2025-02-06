@@ -26,6 +26,7 @@ import guru.sfg.brewery.mappers.BeerMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -38,12 +39,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 @Service
 public class BeerServiceImpl implements BeerService {
 
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
+
+    @Autowired
+    public BeerServiceImpl(BeerRepository beerRepository, BeerMapper beerMapper) {
+        this.beerRepository = beerRepository;
+        this.beerMapper = beerMapper;
+    }
 
     @Override
     public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest, Boolean showInventoryOnHand) {

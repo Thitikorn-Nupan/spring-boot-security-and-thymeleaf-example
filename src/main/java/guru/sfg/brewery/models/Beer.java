@@ -43,15 +43,10 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Beer extends BaseEntity {
 
-    private String beerName;
-    private BeerStyleEnum beerStyle;
-
     @Column(unique = true)
     private String upc;
-
-    /**
-     * Min on hand qty - used to trigger brew
-     */
+    private String beerName;
+    private BeerStyleEnum beerStyle;
     private Integer minOnHand;
     private Integer quantityToBrew;
     private BigDecimal price;

@@ -24,6 +24,7 @@ import guru.sfg.brewery.services.BeerService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j // is lombok logging
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 @RequestMapping("/api/v1/")
 @RestController
 public class BeerRestController {
@@ -46,6 +47,11 @@ public class BeerRestController {
     private static final Integer DEFAULT_PAGE_SIZE = 25;
 
     private final BeerService beerService;
+
+    @Autowired
+    public BeerRestController(BeerService beerService) {
+        this.beerService = beerService;
+    }
 
     @GetMapping(produces = { "application/json" }, path = "beer")
     public ResponseEntity<BeerPagedList> listBeers(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
