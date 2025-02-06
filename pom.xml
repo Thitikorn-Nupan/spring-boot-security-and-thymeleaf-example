@@ -19,25 +19,28 @@
     <description>SFG Brewery Spring MVC Monolith</description>
     <name>SFG Brewery Spring MVC Monolith</name>
 
+    <!-- These all tags work as description -->
     <licenses>
+        <!-- write own licence -->
         <license>
-            <name>GNU General Public License v3.0</name>
-            <url>https://www.gnu.org/licenses/gpl.txt</url>
+            <name>Thitikorn nupan</name>
+            <url>http://www.thitikorn-nupan.com/portfolio</url>
         </license>
     </licenses>
-
     <organization>
-        <name>Spring Framework Guru</name>
+        <name>Spring Boot Security + Thymeleaf</name>
     </organization>
 
     <developers>
         <developer>
-            <name>John Thompson</name>
-            <organization>Spring Framework Guru</organization>
+            <name>Thitikorn nupan</name>
+            <organization>>Spring Boot Security + Thymeleaf</organization>
         </developer>
     </developers>
+    <!-- These all tags work as description -->
 
     <properties>
+        <!-- inside tag properties you can specify varsion -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
@@ -134,17 +137,23 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--        <dependency>
-                    <groupId>org.projectlombok</groupId>
-                    <artifactId>lombok</artifactId>
-                    <scope>annotationProcessor</scope>
-                </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+
+
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.0.0-M5</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -190,6 +199,8 @@
                         <artifactId>mockito-core</artifactId>
                         <version>3.3.3</version>
                     </dependency>
+
+
                 </dependencies>
             </plugin>
             <plugin>
