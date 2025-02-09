@@ -31,20 +31,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // add my custom restHeaderAuthFilter
+        // add my custom restHeaderAuthFilter // for testing
         http.addFilterBefore(
                         restHeaderAuthFilter(authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable();
         // Note. you still can work with Mvc mathers block below
+
         http
                 .authorizeRequests((auth) -> {
                     // Mvc mathers block
-                    // ** You see i permit all "/" as "/beers","/beers/find" so all of authorizeRequests() under this block won work
+                    // ***** .hasIpAddress(<ip>) accept ip a / ip netmask ** now localhost can't access // if you not set permitall it will authen
+                    auth.antMatchers("/","/beers","/beers/**","/brewery","/brewery/**","/customers","/customers/**").hasIpAddress("127.0.0.1");
+                    auth.antMatchers("/brewery/","/brewery/**").hasRole("ADMIN");
                     // where /webjars/** at ? it's dependency folder at external library
-                    auth.antMatchers("/webjars/**", "/login", "/resources/images/**").permitAll();
-                    auth.antMatchers("/").permitAll();
+                    auth.antMatchers("/webjars/**", "/login", "/resources/images/**","/h2-ui","/h2-ui/**").permitAll();
                     auth.antMatchers(HttpMethod.GET, "/api/v1/beer").hasAnyRole("ADMIN", "USER"); // without .permitAll() / .authenticated() default is authenticated()
+                    //
+                    auth.antMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN");
+                    auth.antMatchers(HttpMethod.PUT, "/api/v1/beer/**").hasRole("ADMIN");
                     auth.antMatchers(HttpMethod.GET, "/api/v1/beer.upc/{ucp}").authenticated(); // just authenticate not validate role ** all roles can access
                 })
                 .authorizeRequests()
@@ -54,12 +59,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable() // close default form login
                 // .and()
                 .httpBasic(); // open dialog form
+
+        http.headers().frameOptions().sameOrigin(); // for loading h2 ui templates
     }
 
-    @Bean //** don't forget you have to make sure this one of beans on context
-    // for config user deatil on mem
-    @Override
-    protected UserDetailsService userDetailsService() {
+    // @Bean // don't forget you have to make sure this one of beans on context // bean for config user detail on mem
+    //@Override
+    /*protected UserDetailsService userDetailsService() {
         // rules and authorities are getting you same result but difference way to use on Mvc mathers block ** configure(HttpSecurity http)
         UserDetails user = User.withDefaultPasswordEncoder()
                 .username("user")
@@ -71,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .username("admin")
                 .password("{noop}12345")
                 .roles("ADMIN","USER")
-                .build();*/
+                .build();*//*
         // ** another way
         UserDetails admin = User.builder()
                 .username("admin")
@@ -89,12 +95,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .roles("ADMIN", "USER")
                 .build();
         return new InMemoryUserDetailsManager(user, admin, admin2, admin3);
-    }
+    }*/
 
-   /* @Bean
+   /**
+    @Bean
     protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // can specify
-       //  strength – the log rounds to use, between 4 and 31
+        //  strength – the log rounds to use, between 4 and 31
         // default is 10
     }
     */
