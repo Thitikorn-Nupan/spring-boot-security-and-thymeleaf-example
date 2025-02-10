@@ -1,5 +1,6 @@
 package guru.sfg.brewery.controllers.api;
 
+import guru.sfg.brewery.custom_annotations.BeerReadPermission;
 import guru.sfg.brewery.models.Brewery;
 import guru.sfg.brewery.services.BreweryService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,8 @@ public class BreweryResController {
     }
 
     // provide method security
-    @Secured({"beer.read"}) // now we don't need config on configure(...) method // **** we call security method expression
+    // @Secured({"beer.read"}) // now we don't need config on configure(...) method // **** we call security method expression // work for roles only
+    @BeerReadPermission
     @GetMapping("/breweries")
     public @ResponseBody
     List<Brewery> getBreweriesJson(){
