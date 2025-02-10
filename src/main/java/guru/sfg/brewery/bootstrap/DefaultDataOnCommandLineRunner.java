@@ -47,8 +47,8 @@ public class DefaultDataOnCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        /*loadBreweryData();
-        loadCustomerData();*/
+        loadBreweryData();
+        loadCustomerData();
     }
 
     private void loadBreweryData() {

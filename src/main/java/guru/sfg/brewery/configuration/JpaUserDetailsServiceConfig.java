@@ -49,12 +49,12 @@ public class JpaUserDetailsServiceConfig implements UserDetailsService {
         Set<GrantedAuthority> authorities = user
                 .getAuthorities()
                 .stream()
-                .map(Authority::getRole)
+                .map(Authority::getPermission)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
 
         log.debug("loadUserByUsername {}",authorities.size()); // 1
-        log.debug("loadUserByUsername {}",authorities); // [ROLE_ADMIN]
+        log.debug("loadUserByUsername {}",authorities); // [ROLE_ADMIN] [beer.read]
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),

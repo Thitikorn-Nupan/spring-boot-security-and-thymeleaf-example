@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by jt on 6/21/20.
@@ -22,14 +23,30 @@ public class User {
     private String username;
     private String password;
 
-    @Singular // give us build patter a singular method for add authority
+    /*@Singular // give us build patter a singular method for add authority
     @ManyToMany(cascade = CascadeType.MERGE) // ** ManyToMany
     // ** map table relationship
     @JoinTable(name = "users_authorities",
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
         inverseJoinColumns = {@JoinColumn(name = "authority_id", referencedColumnName = "id")})
+    private Set<Authority> authorities;*/
+
+    @Singular
+    @ManyToMany(cascade = CascadeType.MERGE)//(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private Set<Role> roles;
+
+    @Transient
     private Set<Authority> authorities;
 
+    public Set<Authority> getAuthorities() {
+        return this.roles.stream()
+                .map(Role::getAuthorities)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
+    }
     @Builder.Default
     private Boolean accountNonExpired = true;
     @Builder.Default

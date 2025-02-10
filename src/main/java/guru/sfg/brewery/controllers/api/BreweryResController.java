@@ -26,7 +26,7 @@ public class BreweryResController {
     }
 
     // provide method security
-    @Secured({"ROLE_ADMIN"}) // now we don't need config on configure(...) method // **** we call security method expression
+    @Secured({"beer.read"}) // now we don't need config on configure(...) method // **** we call security method expression
     @GetMapping("/breweries")
     public @ResponseBody
     List<Brewery> getBreweriesJson(){

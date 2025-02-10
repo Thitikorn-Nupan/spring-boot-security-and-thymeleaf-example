@@ -44,7 +44,7 @@ public class BaseEntity {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false )
-    private UUID id;
+    private UUID id; // response 4782428a-5351-4e08-ac30-52aabb2a4bae after get from column id ** no same on column 4782428a53514e08ac3052aabb2a4bae ** it all "-" auto
 
     @Version
     private Long version;

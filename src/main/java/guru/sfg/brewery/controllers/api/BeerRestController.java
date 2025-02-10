@@ -17,6 +17,7 @@
 
 package guru.sfg.brewery.controllers.api;
 
+import guru.sfg.brewery.custom_annotations.BeerReadPermission;
 import guru.sfg.brewery.dto.BeerDto;
 import guru.sfg.brewery.dto.BeerPagedList;
 import guru.sfg.brewery.dto.BeerStyleEnum;
@@ -54,7 +55,9 @@ public class BeerRestController {
         this.beerService = beerService;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER')") // **** we call security expression
+    // @PreAuthorize("hasAuthority('beer.read')") // **** we call security expression
+    // my customer annotation
+    @BeerReadPermission
     @GetMapping(produces = { "application/json" }, path = "beer")
     public ResponseEntity<BeerPagedList> listBeers(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                                    @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -124,15 +127,13 @@ public class BeerRestController {
         //todo hostname for uri
         httpHeaders.add("Location", "/api/v1/beer_service/" + savedDto.getId().toString());
 
-        return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
+        return new ResponseEntity(httpHeaders, HttpStatus.CREATED); // *** return http header but body nothing
     }
 
     @PutMapping(path = {"beer/{beerId}"}, produces = { "application/json" })
     public ResponseEntity updateBeer(@PathVariable("beerId") UUID beerId, @Valid @RequestBody BeerDto beerDto){
-
         beerService.updateBeer(beerId, beerDto);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // *** return http status but body nothing
     }
 
     @DeleteMapping({"beer/{beerId}"})
