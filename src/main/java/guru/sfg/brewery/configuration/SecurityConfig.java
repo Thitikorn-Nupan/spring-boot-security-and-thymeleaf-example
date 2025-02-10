@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,6 +22,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 // *** this is old  ****
 @Configuration
 @EnableWebSecurity
+// ** for open using method security
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+// securedEnabled=true allow us @Secured({"ROLE_ADMIN"})
+// prePostEnabled=true allow use
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) {
@@ -46,10 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     auth.antMatchers("/brewery/","/brewery/**").hasRole("ADMIN");
                     // where /webjars/** at ? it's dependency folder at external library
                     auth.antMatchers("/webjars/**", "/login", "/resources/images/**","/h2-ui","/h2-ui/**").permitAll();
-                    auth.antMatchers(HttpMethod.GET, "/api/v1/beer").hasAnyRole("ADMIN", "USER"); // without .permitAll() / .authenticated() default is authenticated()
                     //
                     auth.antMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN");
                     auth.antMatchers(HttpMethod.PUT, "/api/v1/beer/**").hasRole("ADMIN");
+                    // auth.antMatchers(HttpMethod.GET, "/api/v1/beer").hasAnyRole("ADMIN", "USER"); // without .permitAll() / .authenticated() default is authenticated()
+                    // auth.antMatchers(HttpMethod.GET, "/api/v1/breweries").hasRole("ADMIN"); //
                     auth.antMatchers(HttpMethod.GET, "/api/v1/beer.upc/{ucp}").authenticated(); // just authenticate not validate role ** all roles can access
                 })
                 .authorizeRequests()
