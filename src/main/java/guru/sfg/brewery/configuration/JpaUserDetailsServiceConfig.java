@@ -53,8 +53,9 @@ public class JpaUserDetailsServiceConfig implements UserDetailsService {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
 
-        log.debug("loadUserByUsername {}",authorities.size()); // 1
-        log.debug("loadUserByUsername {}",authorities); // [ROLE_ADMIN] [beer.read]
+        log.debug("JpaUserDetailsServiceConfig.authorities.size() {}",authorities.size()); // 1
+        log.debug("JpaUserDetailsServiceConfig.authorities {}",authorities); //
+
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
@@ -67,7 +68,9 @@ public class JpaUserDetailsServiceConfig implements UserDetailsService {
         );
     }
 
-   /* @Transactional
+   /**
+    Not worked
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

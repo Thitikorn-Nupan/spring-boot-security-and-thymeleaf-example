@@ -18,6 +18,7 @@
 package guru.sfg.brewery.controllers;
 
 
+import guru.sfg.brewery.custom_annotations.BeerReadPermission;
 import guru.sfg.brewery.models.Beer;
 import guru.sfg.brewery.repositories.BeerInventoryRepository;
 import guru.sfg.brewery.repositories.BeerRepository;
@@ -54,15 +55,8 @@ public class BeerController {
         this.beerInventoryRepository = beerInventoryRepository;
     }
 
-    @RequestMapping("/find")
-    public String findBeers(Model model) {
-        model.addAttribute("beer", Beer.builder().build());
-        return "beers/findBeers";
-    }
-
     @GetMapping
     public String processFindFormReturnMany(Beer beer, BindingResult result, Model model) {
-
         Page<Beer> pagedResult = beerRepository.findAllByBeerNameIsLike("%" + beer.getBeerName() + "%", createPageRequest(0, 10, Sort.Direction.DESC, "beerName"));
         List<Beer> beerList = pagedResult.getContent();
         if (beerList.isEmpty()) {
@@ -79,6 +73,14 @@ public class BeerController {
             return "beers/beerList";
         }
     }
+
+    @RequestMapping("/find")
+    public String findBeers(Model model) {
+        model.addAttribute("beer", Beer.builder().build());
+        return "beers/findBeers";
+    }
+
+
 
 
     @GetMapping("/{beerId}")

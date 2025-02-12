@@ -19,13 +19,13 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-// *** this is old  ****
+// *** this is old way  ****
 @Configuration
 @EnableWebSecurity
 // ** for open using method security
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 // securedEnabled=true allow us @Secured({"**"})
 // prePostEnabled=true allow use @PreAuthorize("hasAuthority('***')")
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) {
@@ -45,19 +45,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests((auth) -> {
-                    // Mvc mathers block
-                    // ***** .hasIpAddress(<ip>) accept ip a / ip netmask ** now localhost can't access // if you not set permitall it will authen
-                    auth.antMatchers("/","/beers","/beers/**","/brewery","/brewery/**","/customers","/customers/**").permitAll();//.hasAuthority("beer.read");//; .hasIpAddress("127.0.0.1");
-                    auth.antMatchers("/brewery/","/brewery/**").hasAnyAuthority("order.read","customer.order.read");
-                    // where /webjars/** at ? it's dependency folder at external library
+                    //// ** Mvc matchers block
+                    // ***** .hasIpAddress(<ip>) accept ip a / ip netmask ** now localhost can't access // if you not set permit all it default is authen
+                    auth.antMatchers("/","/beers","/beers/**","/brewery","/brewery/**").permitAll(); // .hasIpAddress("127.0.0.1");
+                    // where "/webjars/**" at ??? *** it's dependency folder at external library
                     auth.antMatchers("/webjars/**", "/login", "/resources/images/**","/h2-ui","/h2-ui/**").permitAll();
-                    auth.antMatchers(HttpMethod.GET, "/api/v1/beer.upc/{ucp}").hasAuthority("order.read");// .authenticated(); // just authenticate not validate role ** all roles can access
-                    // auth.antMatchers(HttpMethod.GET, "/api/v1/beer/**").hasAuthority("order.read"); // **
-                    // auth.antMatchers(HttpMethod.GET, "/api/v1/breweries").hasAuthority("order.create"); // **
+                    auth.antMatchers(HttpMethod.GET,"/api/v1//brewery/**").hasAnyAuthority("beer.read","customer.read","brewery.read","order.read"); /// who has some authorities as "beer.read","customer.read","brewery.read","order.read" will only access.
+                    // .authenticated(); ** just authenticate not validate role/authority
+                    auth.antMatchers(HttpMethod.GET, "/api/v1/beer.upc/{ucp}").authenticated();
+                    // **
+                    // **
                     auth.antMatchers(HttpMethod.POST, "/api/v1/beer").hasAuthority("beer.create"); // who has beer.create can do
                     auth.antMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasAnyAuthority("beer.delete"); // who has beer.delete can do
                     auth.antMatchers(HttpMethod.PUT, "/api/v1/beer/**").hasAuthority("beer.update"); //
-                    // auth.antMatchers(HttpMethod.GET, "/api/v1/beer").hasAnyRole("ADMIN", "USER"); // without .permitAll() / .authenticated() default is authenticated()
                     auth.antMatchers(HttpMethod.GET,"/api/v1/customers/{customerId}/orders").hasAuthority("beer.read");
                 })
                 .authorizeRequests()
@@ -71,7 +71,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().sameOrigin(); // for loading h2 ui templates
     }
 
-    // @Bean // don't forget you have to make sure this one of beans on context // bean for config user detail on mem
+    // don't forget you have to make sure this one of beans on context
+    // bean for config user detail on mem
+    // @Bean
     //@Override
     /*protected UserDetailsService userDetailsService() {
         // rules and authorities are getting you same result but difference way to use on Mvc mathers block ** configure(HttpSecurity http)
@@ -105,7 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new InMemoryUserDetailsManager(user, admin, admin2, admin3);
     }*/
 
-   /**
+   /*
     @Bean
     protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // can specify

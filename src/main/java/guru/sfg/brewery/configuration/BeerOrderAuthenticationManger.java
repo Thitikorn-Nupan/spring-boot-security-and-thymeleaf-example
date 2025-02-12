@@ -11,7 +11,7 @@ import java.util.UUID;
  * Created by jt on 7/6/20.
  */
 @Slf4j
-@Component
+// @Component
 public class BeerOrderAuthenticationManger {
 
     public boolean customerIdMatches(Authentication authentication, UUID customerId){

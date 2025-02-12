@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j // is lombok logging
 // @RequiredArgsConstructor
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/brewery")
 @RestController
 public class BreweryResController {
 
@@ -31,12 +31,11 @@ public class BreweryResController {
     // @Secured({"beer.read"}) // now we don't need config on configure(...) method // **** we call security method expression // work for roles only
     // @BeerReadPermission
 
-
     /*@PreAuthorize("hasAuthority('order.read') OR " +
             "hasAuthority('customer.order.read') " +
             " AND @beerOrderAuthenticationManger.customerIdMatches(authentication, #customerId )")*/ // not sure
-    @PreAuthorize("hasAuthority('order.read') OR " +
-            "hasAuthority('customer.order.read') ")
+    /*@PreAuthorize("hasAuthority('order.read') OR " +
+            "hasAuthority('customer.order.read') ")*/
     @GetMapping("/breweries")
     public @ResponseBody
     List<Brewery> getBreweriesJson(){

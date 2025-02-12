@@ -42,8 +42,8 @@ public class CustomerController {
 
     private final CustomerRepository customerRepository;
 
-    @CustomerReadPermission
     // http://localhost:8081/customers?customerName=
+    @CustomerReadPermission // only USER can't access
     @GetMapping
     public String processFindFormReturnMany(Customer customer, BindingResult result, Model model) {
         // find customers by name

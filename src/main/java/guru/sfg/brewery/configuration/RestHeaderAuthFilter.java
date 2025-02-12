@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// this filter for testing ?
+// this filter for testing
 @Slf4j
 public class RestHeaderAuthFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -43,12 +43,12 @@ public class RestHeaderAuthFilter extends AbstractAuthenticationProcessingFilter
         }
 
         try {
+
             Authentication authResult = attemptAuthentication(request, response);
 
             if (authResult != null) {
                 successfulAuthentication(request, response, chain, authResult);
-                // chain.doFilter(request, response); // if you wanna return result as same api you provide
-
+                // chain.doFilter(request, response); // ** if you wanna return result as same as api you provide
             } else {
                 chain.doFilter(request, response);
             }
@@ -72,7 +72,7 @@ public class RestHeaderAuthFilter extends AbstractAuthenticationProcessingFilter
             password = "";
         }
 
-        log.debug("Authenticating User: " + userName);
+        log.debug("Authenticating User:Password: {}:{}" , userName , password);
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userName, password);
 
@@ -105,12 +105,11 @@ public class RestHeaderAuthFilter extends AbstractAuthenticationProcessingFilter
         SecurityContextHolder.clearContext(); //
 
         if (log.isDebugEnabled()) {
-            log.debug("Authentication request failed: " + failed.toString(), failed);
+            log.debug("Authentication request failed: {}" , failed.toString(), failed);
             log.debug("Updated SecurityContextHolder to contain null Authentication");
         }
 
-//        response.sendError(HttpStatus.UNAUTHORIZED.value(),
-//                HttpStatus.UNAUTHORIZED.getReasonPhrase());
+
         response.setContentType("application/json"); // default is text
         response.getWriter().write("{\"message\":\"invalid user or password\"}");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
