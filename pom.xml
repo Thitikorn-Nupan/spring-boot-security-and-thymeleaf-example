@@ -153,14 +153,21 @@
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
         </dependency>
-
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
+        <!-- not working -->
+       <!-- <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.8.1</version>
+            <scope>test</scope>
+        </dependency>-->
+
+
     </dependencies>
 
     <build>
@@ -204,8 +211,9 @@
                     <dependency>
                         <groupId>org.mockito</groupId>
                         <artifactId>mockito-core</artifactId>
-                        <version>3.3.3</version>
+                        <version>2.23.4</version>
                     </dependency>
+                    <!-- n IntelliJ, to correct the dependencies, we need to correct the pom.xml. The corrected pom.xml looks like this -->
 
 
                 </dependencies>

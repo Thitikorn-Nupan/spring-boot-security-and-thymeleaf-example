@@ -47,17 +47,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests((auth) -> {
                     // Mvc mathers block
                     // ***** .hasIpAddress(<ip>) accept ip a / ip netmask ** now localhost can't access // if you not set permitall it will authen
-                    auth.antMatchers("/","/beers","/beers/**","/brewery","/brewery/**","/customers","/customers/**").hasIpAddress("127.0.0.1");
-                    auth.antMatchers("/brewery/","/brewery/**").hasAuthority("beer.read");
+                    auth.antMatchers("/","/beers","/beers/**","/brewery","/brewery/**","/customers","/customers/**").permitAll();//.hasAuthority("beer.read");//; .hasIpAddress("127.0.0.1");
+                    auth.antMatchers("/brewery/","/brewery/**").hasAnyAuthority("order.read","customer.order.read");
                     // where /webjars/** at ? it's dependency folder at external library
                     auth.antMatchers("/webjars/**", "/login", "/resources/images/**","/h2-ui","/h2-ui/**").permitAll();
-                    auth.antMatchers(HttpMethod.GET, "/api/v1/beer.upc/{ucp}").hasAuthority("beer.read");// .authenticated(); // just authenticate not validate role ** all roles can access
-                    auth.antMatchers(HttpMethod.GET, "/api/v1/beer/**").hasAuthority("beer.read");
-                    // auth.antMatchers(HttpMethod.GET, "/api/v1/beer").hasAuthority("beer.read");
+                    auth.antMatchers(HttpMethod.GET, "/api/v1/beer.upc/{ucp}").hasAuthority("order.read");// .authenticated(); // just authenticate not validate role ** all roles can access
+                    // auth.antMatchers(HttpMethod.GET, "/api/v1/beer/**").hasAuthority("order.read"); // **
+                    // auth.antMatchers(HttpMethod.GET, "/api/v1/breweries").hasAuthority("order.create"); // **
                     auth.antMatchers(HttpMethod.POST, "/api/v1/beer").hasAuthority("beer.create"); // who has beer.create can do
                     auth.antMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasAnyAuthority("beer.delete"); // who has beer.delete can do
                     auth.antMatchers(HttpMethod.PUT, "/api/v1/beer/**").hasAuthority("beer.update"); //
                     // auth.antMatchers(HttpMethod.GET, "/api/v1/beer").hasAnyRole("ADMIN", "USER"); // without .permitAll() / .authenticated() default is authenticated()
+                    auth.antMatchers(HttpMethod.GET,"/api/v1/customers/{customerId}/orders").hasAuthority("beer.read");
                 })
                 .authorizeRequests()
                 .anyRequest()

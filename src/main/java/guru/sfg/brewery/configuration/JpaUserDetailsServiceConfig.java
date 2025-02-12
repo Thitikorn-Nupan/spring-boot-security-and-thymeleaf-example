@@ -49,7 +49,7 @@ public class JpaUserDetailsServiceConfig implements UserDetailsService {
         Set<GrantedAuthority> authorities = user
                 .getAuthorities()
                 .stream()
-                .map(Authority::getPermission)
+                .map(GrantedAuthority::getAuthority)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
 
@@ -67,4 +67,15 @@ public class JpaUserDetailsServiceConfig implements UserDetailsService {
         );
     }
 
+   /* @Transactional
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        log.debug("Getting User info via JPA");
+
+        return userRepository.findByUsername(username).orElseThrow(() -> {
+
+            return new UsernameNotFoundException("User name: " + username + " not found");
+        });
+    }*/
 }

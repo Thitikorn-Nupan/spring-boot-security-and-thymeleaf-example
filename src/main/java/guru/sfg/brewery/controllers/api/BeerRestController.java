@@ -57,7 +57,7 @@ public class BeerRestController {
 
     // @PreAuthorize("hasAuthority('beer.read')") // **** we call security expression
     // my customer annotation
-    @BeerReadPermission
+    @PreAuthorize("hasAuthority('beer.read')")
     @GetMapping(produces = { "application/json" }, path = "beer")
     public ResponseEntity<BeerPagedList> listBeers(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                                    @RequestParam(value = "pageSize", required = false) Integer pageSize,

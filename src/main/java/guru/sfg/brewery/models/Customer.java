@@ -18,11 +18,10 @@ package guru.sfg.brewery.models;
 
 
 
+import guru.sfg.brewery.models.security.User;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
@@ -37,10 +36,6 @@ import java.util.UUID;
 public class Customer extends BaseEntity {
 
     private String customerName;
-    @Column(length = 36, columnDefinition = "varchar")
-    private UUID apiKey;
-    @OneToMany(mappedBy = "customer")
-    private Set<BeerOrder> beerOrders;
 
 
     @Builder
@@ -52,5 +47,13 @@ public class Customer extends BaseEntity {
         this.beerOrders = beerOrders;
     }
 
+    @Column(length = 36, columnDefinition = "varchar")
+    private UUID apiKey;
+
+    @OneToMany(mappedBy = "customer")
+    private Set<BeerOrder> beerOrders;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<User> users;
 
 }
