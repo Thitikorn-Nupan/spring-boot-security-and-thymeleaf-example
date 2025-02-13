@@ -17,6 +17,7 @@
 
 package guru.sfg.brewery.controllers;
 
+import guru.sfg.brewery.custom_annotations.CustomerCreatePermission;
 import guru.sfg.brewery.custom_annotations.CustomerReadPermission;
 import guru.sfg.brewery.models.Customer;
 import guru.sfg.brewery.repositories.CustomerRepository;
@@ -82,14 +83,13 @@ public class CustomerController {
     }
 
 
-    // @CustomerCreatePermission
     @GetMapping("/new")
     public String initCreationForm(Model model) {
         model.addAttribute("customer", Customer.builder().build());
         return "customers/createCustomer";
     }
 
-    // @CustomerCreatePermission
+    @CustomerCreatePermission
     @PostMapping("/new")
     public String processCreationForm(Customer customer) {
         //ToDO: Add Service
@@ -101,7 +101,7 @@ public class CustomerController {
         return "redirect:/customers/" + savedCustomer.getId();
     }
 
-   // @CustomerUpdatePermission
+    // @CustomerUpdatePermission
     @GetMapping("/{customerId}/edit")
     public String initUpdateCustomerForm(@PathVariable UUID customerId, Model model) {
         if (customerRepository.findById(customerId).isPresent())

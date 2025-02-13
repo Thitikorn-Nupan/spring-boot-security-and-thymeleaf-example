@@ -47,26 +47,46 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests((auth) -> {
                     //// ** Mvc matchers block
                     // ***** .hasIpAddress(<ip>) accept ip a / ip netmask ** now localhost can't access // if you not set permit all it default is authen
-                    auth.antMatchers("/","/beers","/beers/**","/brewery","/brewery/**").permitAll(); // .hasIpAddress("127.0.0.1");
+                    auth.antMatchers("/", "/beers", "/beers/**", "/brewery", "/brewery/**").permitAll(); // .hasIpAddress("127.0.0.1");
                     // where "/webjars/**" at ??? *** it's dependency folder at external library
-                    auth.antMatchers("/webjars/**", "/login", "/resources/images/**","/h2-ui","/h2-ui/**").permitAll();
-                    auth.antMatchers(HttpMethod.GET,"/api/v1//brewery/**").hasAnyAuthority("beer.read","customer.read","brewery.read","order.read"); /// who has some authorities as "beer.read","customer.read","brewery.read","order.read" will only access.
+                    auth.antMatchers("/webjars/**", "/login", "/resources/images/**", "/h2-ui", "/h2-ui/**").permitAll();
+                    auth.antMatchers(HttpMethod.GET, "/api/v1//brewery/**").hasAnyAuthority("beer.read", "customer.read", "brewery.read", "order.read"); /// who has some authorities as "beer.read","customer.read","brewery.read","order.read" will only access.
                     // .authenticated(); ** just authenticate not validate role/authority
                     auth.antMatchers(HttpMethod.GET, "/api/v1/beer.upc/{ucp}").authenticated();
-                    // **
-                    // **
                     auth.antMatchers(HttpMethod.POST, "/api/v1/beer").hasAuthority("beer.create"); // who has beer.create can do
+                    // **
+                    // **
+                    // **
                     auth.antMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasAnyAuthority("beer.delete"); // who has beer.delete can do
                     auth.antMatchers(HttpMethod.PUT, "/api/v1/beer/**").hasAuthority("beer.update"); //
-                    auth.antMatchers(HttpMethod.GET,"/api/v1/customers/{customerId}/orders").hasAuthority("beer.read");
+                    auth.antMatchers(HttpMethod.GET, "/api/v1/customers/{customerId}/orders").hasAuthority("beer.read");
                 })
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .formLogin().disable() // close default form login
+                // you can still pass data with postman but you have to use *** form-data *** type
+                .formLogin()// .disable() // close default form login
                 // .and()
-                .httpBasic(); // open dialog form
+                // .httpBasic() // open dialog form
+                .and()
+                .csrf() // enable csrf protection
+                // Basic Get method no error
+                .ignoringAntMatchers(
+                        // ** Provide endpoint you have to protect
+                        "/h2-ui/**",
+                        "/h2-ui",
+                        // ** if you have communicated between client-server as POST,PUT,DELETE
+                        // ** you will get error invalid csrf token because we enable csrf protection
+                        // ** so you should add all endpoint you have to protect
+                        "/api/**",
+                        // **
+                        "/customers/**",
+                        "/customers",
+                        "/login",
+                        "/login/**"
+
+                );
 
         http.headers().frameOptions().sameOrigin(); // for loading h2 ui templates
     }
