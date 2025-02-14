@@ -1,5 +1,6 @@
 package guru.sfg.brewery.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,10 +15,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
+// import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.sql.DataSource;
 
 // *** this is old way  ****
 @Configuration
@@ -28,11 +34,31 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+
+    private final UserDetailsService userDetailsService;
+    // ***
+    private final PersistentTokenRepository persistentTokenRepository;
+
+    @Autowired // for remember me function
+    public SecurityConfig(UserDetailsService userDetailsService, PersistentTokenRepository persistentTokenRepository) {
+        this.userDetailsService = userDetailsService;
+        this.persistentTokenRepository = persistentTokenRepository;
+    }
+
     public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) {
         RestHeaderAuthFilter filter = new RestHeaderAuthFilter(new AntPathRequestMatcher("/api/**"));
         filter.setAuthenticationManager(authenticationManager);
         return filter;
     }
+
+    // needed for use with Spring Data JPA SPeL
+    /*@Bean
+    public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
+        return new SecurityEvaluationContextExtension();
+    }
+*/
+
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -49,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     // ***** .hasIpAddress(<ip>) accept ip a / ip netmask ** now localhost can't access // if you not set permit all it default is authen
                     auth.antMatchers("/", "/beers", "/beers/**", "/brewery", "/brewery/**").permitAll(); // .hasIpAddress("127.0.0.1");
                     // where "/webjars/**" at ??? *** it's dependency folder at external library
-                    auth.antMatchers("/webjars/**", "/login", "/resources/images/**", "/h2-ui", "/h2-ui/**").permitAll();
+                    auth.antMatchers("/webjars/**", "/login", "/resources/images/**", "/h2-ui", "/h2-ui/**","/less/**").permitAll();
                     auth.antMatchers(HttpMethod.GET, "/api/v1//brewery/**").hasAnyAuthority("beer.read", "customer.read", "brewery.read", "order.read"); /// who has some authorities as "beer.read","customer.read","brewery.read","order.read" will only access.
                     // .authenticated(); ** just authenticate not validate role/authority
                     auth.antMatchers(HttpMethod.GET, "/api/v1/beer.upc/{ucp}").authenticated();
@@ -61,6 +87,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     auth.antMatchers(HttpMethod.PUT, "/api/v1/beer/**").hasAuthority("beer.update"); //
                     auth.antMatchers(HttpMethod.GET, "/api/v1/customers/{customerId}/orders").hasAuthority("beer.read");
                 })
+                // modified login/logout page
+                .formLogin(loginConfigurer -> {
+                    loginConfigurer
+                            .loginProcessingUrl("/login")
+                            .loginPage("/").permitAll()
+                            .defaultSuccessUrl("/beers", true)
+                            .permitAll();
+                })
+                .logout(logoutConfigurer -> {
+                    logoutConfigurer
+                            //
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                            .logoutSuccessUrl("/")
+                            .permitAll();
+                })
+                // ***
+                // *** when you remove jsession user still keep login
+                .rememberMe()
+                .key("sfg-key")
+                // for table
+                .tokenRepository(persistentTokenRepository)
+                .userDetailsService(userDetailsService)
+                // ***
+                .and()
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated()
@@ -71,7 +121,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .httpBasic() // open dialog form
                 .and()
                 .csrf() // enable csrf protection
-                // Basic Get method no error
+                // Basic Get method it is no error
                 .ignoringAntMatchers(
                         // ** Provide endpoint you have to protect
                         "/h2-ui/**",
