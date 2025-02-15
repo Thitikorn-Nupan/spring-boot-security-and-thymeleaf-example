@@ -1,7 +1,10 @@
 package guru.sfg.brewery.configuration;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -12,8 +15,13 @@ import javax.sql.DataSource;
  */
 // for remember me
 @Configuration
-public class SecuritySchemaRememberMeFunction {
+public class SecurityBeansConfig {
 
+    // for event listening
+    @Bean
+    public AuthenticationEventPublisher authenticationEventPublisher(ApplicationEventPublisher applicationEventPublisher){
+        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
+    }
     /*
     format table
     * create table persistent_logins (username varchar(64) not null,
