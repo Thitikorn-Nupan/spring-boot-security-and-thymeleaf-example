@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car List</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/car-list.css}">
+    <link rel="icon" th:href="@{/images/t.png}">
+</head>
+<body>
+<!-- Navbar -->
+<div class="container" style="margin: 0 auto;">
+    <div class="my-navbar" >
+        <img class="logo"  height="50" th:src="@{/images/t.png}"/>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Pricing</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<!-- Navbar -->
+
+<div class="container mt-3">
+    <table class="table my-table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Model</th>
+            <th scope="col">Price</th>
+            <th scope="col">Option</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Loop here-->
+        <tr th:each="car : ${cars}">
+            <td th:text="${car.getCid()}">null</td>
+            <td th:text="${car.getModel()}">null</td>
+            <td th:text="${car.getBrand()}">null</td>
+            <td th:text="${car.getPrice()}">null</td>
+            <td >
+                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                    <button type="button" class="btn btn-danger">Remove</button>
+                    <button type="button" class="btn btn-warning">Update</button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+<script th:href="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+</body>
+</html>
