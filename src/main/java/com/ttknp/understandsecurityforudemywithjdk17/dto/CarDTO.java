@@ -12,12 +12,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-// @Slf4j
+@Slf4j
 @Service
 public class CarDTO implements CarService {
 
     private CarRepo carRepo;
-    private Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public CarDTO(CarRepo carRepo) {
@@ -31,6 +30,30 @@ public class CarDTO implements CarService {
         // just want a size
         for (Object i : cars) counter++;
         log.debug("cars size : {}", counter);
-        return carRepo.findAll();
+        return cars;
     }
+
+    @Override
+    public Boolean addCar(Car car) {
+        return carRepo.save(car).getCid() != null;
+    }
+
+    @Override
+    public Boolean removeCar(Integer id) {
+        return carRepo.findById(id).map((car -> {
+            carRepo.delete(car);
+            return true;
+        })).orElse(false);
+    }
+
+    @Override
+    public Boolean editCar(Integer id, Car car) {
+        return carRepo.findById(id).map((carFound -> {
+            car.setCid(carFound.getCid());
+            carRepo.save(car);
+            return true;
+        })).orElse(false);
+    }
+
+
 }

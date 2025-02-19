@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -20,6 +21,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,10 +37,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Slf4j
 @Configuration
 @EnableWebSecurity(debug = true)
-// ** for open using method security
+// ** Note this shit @EnableMethodSecurity() annotation if you used it
+// ** All your mvc block won't work that way you can login but get http status 403
+// ** So this case i don't want
 // securedEnabled=true allow us @Secured({"**"})
 // prePostEnabled=true allow use @PreAuthorize("hasAuthority('***')")
-@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
+// @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true,jsr250Enabled = true) // ** for open using method security
 public class SecurityConfig {
 
     // again it's for testing (** this way for jdk 17 to inject AuthenticationManager)
@@ -59,7 +63,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain apiFilterChain(HttpSecurity httpSecurity) throws Exception { //  , MvcRequestMatcher.Builder mvc
-
         /**
         // For testing
         // this testing just validate string on header
@@ -67,7 +70,6 @@ public class SecurityConfig {
                 .addFilterBefore(new RestApiHeaderBeforeAuthFilter(), BasicAuthenticationFilter.class)
                 .csrf().disable();
         */
-
         // For testing
         // this testing validate string on header and authenticate user,password
         // this is good way to filter !
@@ -76,18 +78,21 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable();
 
+        // 403 means that user is logged in but doesn't have the right permission to view
         httpSecurity
                 .authorizeHttpRequests((authz) -> {
                     // Mvc matchers block
-                    authz.requestMatchers(HttpMethod.GET, "/bootstrap/**","/css/**","/images/**").permitAll(); // for bootstrap css , my css
+                    authz.requestMatchers(HttpMethod.GET, "/login","/bootstrap/**","/css/**","/images/**").permitAll(); // for bootstrap css , my css
                     authz.requestMatchers(HttpMethod.GET, "/h2-ui","/h2-ui/**").permitAll();
                     authz.requestMatchers(HttpMethod.POST, "/h2-ui/**").permitAll();
                     // *** authenticate and no validate rules
                     authz.requestMatchers(HttpMethod.GET, "/template/car-list").hasAuthority("permission.read");
-                    // *** who has read only can access
                     authz.requestMatchers(HttpMethod.GET, "/api/car/all","/api/car/").hasAuthority("permission.read");
+                    authz.requestMatchers(HttpMethod.POST, "/api/car/new").hasAuthority("permission.create");
+                    authz.requestMatchers(HttpMethod.DELETE, "/api/car/remove").hasAuthority("permission.delete");
+                    authz.requestMatchers(HttpMethod.PUT, "/api/car/edit").hasAuthority("permission.update");
                 })
-                // .formLogin().disable() // disable form login *** optional
+                // .formLogin(withDefaults()) // enable form login *** optional
                 .httpBasic(withDefaults()) // enable http basic *** dialog login
                 // *** for enable loading h2 ui templates
                 // *** same .headers().frameOptions().sameOrigin();
@@ -100,14 +105,33 @@ public class SecurityConfig {
                 // *** common error Invalid CSRF token found for http://localhost:8082 ***
                 // *** this case i enable
                 .csrf((csrf) -> {
-                    csrf.ignoringRequestMatchers("/h2-ui", "/h2-ui/**","/template/webjars/**",
+                    csrf.ignoringRequestMatchers(
+                            "/h2-ui", "/h2-ui/**","/template/webjars/**",
                             "/api/car/all","/api/car/",
+                            "/api/car/new",
+                            "/api/car/remove",
+                            "/api/car/edit", // specify security on the top's method
                             "/template/car-list"
                     );
                 })
-                // add your jpa user detail service
-                .userDetailsService(userDetailsService);
 
+                // .csrf().disable();
+                // add your jpa user detail service
+                .userDetailsService(userDetailsService)
+                // modified form login
+                .formLogin(loginConfigurer -> {
+                    loginConfigurer.loginProcessingUrl("/login") // set url your login templates
+                            .loginPage("/login").permitAll()
+                            .defaultSuccessUrl("/api/car/all", true)
+                            .permitAll();
+                })
+                .logout(logoutConfigurer -> {
+                    logoutConfigurer
+                            //
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                            .logoutSuccessUrl("/login")
+                            .permitAll();
+                });
         /**
          // For testing
          httpSecurity
@@ -117,6 +141,7 @@ public class SecurityConfig {
 
         return httpSecurity.build();
     }
+
     /*
     @Bean
     public UserDetailsService userDetailsService() {
@@ -153,41 +178,33 @@ public class SecurityConfig {
         return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
     }
 
-    // ** @EventListener Annotation that marks a method as a listener for application events. ** it works after logged in success
-    // ** it inject AuthenticationSuccessEvent class auto
+    // ** @EventListener Annotation that marks a method as a listener for application events. ** it works after logged in success ** it inject AuthenticationSuccessEvent class auto
     @EventListener
     public void listenAuthenticationSuccessEvent(AuthenticationSuccessEvent event){
         log.debug("User Logged In");
         if (event.getSource() instanceof UsernamePasswordAuthenticationToken token) {
-
             log.debug("token.getPrincipal() : {}" , token.getPrincipal() ); // [Username=admin, Password=[PROTECTED], Enabled=true, AccountNonExpired=true, CredentialsNonExpired=true, AccountNonLocked=true, Granted Authorities=[delete, read, update, write]]
-
             if(token.getPrincipal() instanceof org.springframework.security.core.userdetails.User){
                 // this case only work! can't convert to models.security.User
                 String username = ((User) token.getPrincipal()).getUsername(); // Username: admin
                 log.debug("Username logged in: {}" , username ); // amin
             }
-
             if(token.getDetails() instanceof WebAuthenticationDetails details){
-
                 log.debug("Source IP : {} ,details : {}" , details.getRemoteAddress(),details); // Source IP : 0:0:0:0:0:0:0:1 ,details : WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null
-
             }
+
         }
     }
 
-    // it works after authenticate and get something wrong as username or password
-    // ** it inject AuthenticationFailureBadCredentialsEvent class auto
+    // it works after authenticate and get something wrong as username or password ** it inject AuthenticationFailureBadCredentialsEvent class auto
     @EventListener
     public void listenAuthenticationFailureBadCredentialsEvent(AuthenticationFailureBadCredentialsEvent event){
         log.debug("User Login failure");
 
         if(event.getSource() instanceof UsernamePasswordAuthenticationToken token){
-
             if(token.getPrincipal() instanceof String){
                 log.debug("token.getPrincipal() : " + token.getPrincipal());
             }
-
             if(token.getDetails() instanceof WebAuthenticationDetails details){
                 log.debug("Source IP: {}" , details.getRemoteAddress());
             }

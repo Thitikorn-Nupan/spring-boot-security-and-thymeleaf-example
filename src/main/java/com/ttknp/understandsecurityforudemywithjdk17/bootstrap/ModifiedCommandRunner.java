@@ -133,6 +133,7 @@ public class ModifiedCommandRunner implements CommandLineRunner {
                 .role(customerRole)
                 .build();
 
+        // *** save to table users,users_roles in *** once method
         userRepository.saveAll(Arrays.asList(admin, user, nobody));
 
         log.debug("Users Loaded : {}", userRepository.count());

@@ -27,6 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // ***
 // ***
 // ***
+// *** JUnit5 test cases for CRUD REST APIs.  *** use the @WebMvcTest annotation to load only UserController class. (can multiple rest controller)
+// @WebMvcTest(controllers = {C1.class, C2.class})
 @WebMvcTest(CarControl.class)
 @Import(SecurityConfig.class)
 public class CarControlAuthenticateUserInMemoryTest {

@@ -25,6 +25,7 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private String email;
+
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE},fetch = FetchType.EAGER)//(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -32,9 +33,9 @@ public class User implements UserDetails {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private Set<Role> roles;
 
-    @Transient
-    // Specifies that the property or field is not persistent.
+    // @Transient Specifies that the property or field is not persistent.
     // It is used to annotate a property or field of an entity class, mapped superclass, or embeddable class.
+    @Transient
     public Set<GrantedAuthority> getAuthorities() {
         return this.roles.stream()
                 .map(Role::getAuthorities)
@@ -45,7 +46,8 @@ public class User implements UserDetails {
                 .collect(Collectors.toSet());
     }
 
-    /*@Override
+    /**
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }

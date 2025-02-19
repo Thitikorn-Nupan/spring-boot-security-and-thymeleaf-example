@@ -25,8 +25,7 @@ import java.util.stream.Collectors;
 
 
  @Slf4j // this anno work as logback.xml
-//@Service
-@Component("userDetailsService")
+@Component("userDetailsService") // working as @Service
 public class JpaUserDetailsServiceConfig implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -54,7 +53,7 @@ public class JpaUserDetailsServiceConfig implements UserDetailsService {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
 
-        log.debug("JpaUserDetailsServiceConfig.authorities.size() {}",authorities.size()); // 1
+        // log.debug("JpaUserDetailsServiceConfig.authorities.size() {}",authorities.size()); // 1
         log.debug("JpaUserDetailsServiceConfig.authorities {}",authorities); //
 
 

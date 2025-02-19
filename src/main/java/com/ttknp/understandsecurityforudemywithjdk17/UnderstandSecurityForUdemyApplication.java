@@ -19,12 +19,10 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguratio
  *   }
  */
 @SpringBootApplication
-
 public class UnderstandSecurityForUdemyApplication {
-    // private static Logger log = LoggerFactory.getLogger(UnderstandSecurityForUdemyApplication.class);
     public static void main(String[] args) {
         SpringApplication.run(UnderstandSecurityForUdemyApplication.class, args);
-        // log.debug("UnderstandSecurityForUdemyApplication class initialized"); // 15:47:09.874 [main] DEBUG c.t.u.UnderstandSecurityForUdemyApplication : UnderstandSecurityForUdemyApplication class initialized
+        log.debug("UnderstandSecurityForUdemyApplication class initialized"); // 15:47:09.874 [main] DEBUG c.t.u.UnderstandSecurityForUdemyApplication : UnderstandSecurityForUdemyApplication class initialized
     }
 
 }

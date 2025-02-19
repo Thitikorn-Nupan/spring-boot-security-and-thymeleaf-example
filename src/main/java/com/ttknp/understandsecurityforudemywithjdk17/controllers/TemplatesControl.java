@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = "/template")
+// @RequestMapping(value = "/template")
 public class TemplatesControl {
 
     private CarService carService;
@@ -20,7 +20,7 @@ public class TemplatesControl {
     }
 
 
-    @GetMapping(value = "/car-list")
+    @GetMapping(value = "/template/car-list")
     private ModelAndView displayCarList() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("car-list");
@@ -28,4 +28,14 @@ public class TemplatesControl {
         modelAndView.setStatus(HttpStatusCode.valueOf(202));
         return modelAndView;
     }
+
+    @GetMapping(value = "/login")
+    private ModelAndView displayLogin() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login");
+        modelAndView.setStatus(HttpStatusCode.valueOf(200));
+        return modelAndView;
+    }
+
+
 }

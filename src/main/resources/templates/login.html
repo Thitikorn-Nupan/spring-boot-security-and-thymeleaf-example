@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+  <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
+  <link rel="icon" th:href="@{/images/t.png}">
+
+</head>
+<body>
+<div th:if="${param.error}">
+    <div class="alert alert-danger">Invalid Email or Password</div>
+</div>
+<div th:if="${param.logout}">
+    <div class="alert alert-success"> You have been logged out.</div>
+</div>
+<div class="row" sec:authorize="!isAuthenticated()">
+    <div class="login-page" >
+        <div class="form">
+            <form  class="register-form">
+                <input type="text" placeholder="name"/>
+                <input type="password" placeholder="password"/>
+                <input type="text" placeholder="email address"/>
+                <button>create</button>
+                <p class="message">Already registered? <a href="#">Sign In</a></p>
+            </form>
+            <!-- you can send this form on postman -->
+            <form th:action="@{/login}" method="post" class="login-form" datatype="multipart/form-data">
+                <input type="text" name="username" placeholder="username"/>
+                <input type="password" name="password" placeholder="password"/>
+                <button type="submit">login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row" sec:authorize="isAuthenticated()">
+    <p><a class="btn btn-danger" th:href="@{/logout}">Logout</a></p>
+</div>
+
+
+
+
+</body>
+</html>
